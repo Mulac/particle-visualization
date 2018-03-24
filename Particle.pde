@@ -3,14 +3,24 @@ class Particle {
   PVector velocity;
   PVector location;
   PVector acceleration;
-  float topSpeed, mass, v1, v2, v3, damp;
+  PVector mouse;
+  PVector project;
+  PVector dist;
+  float topSpeed, mass, h, v1, v2, v3, lifespan, colour, inc, aging;
+  boolean alive;
   
-  Particle(){ 
-    location = new PVector(random(width), random(height));
+  Particle(PVector p, float a){ 
+    alive = true;
+    
+    location = p;
     velocity = new PVector(0, 0);
     acceleration = new PVector(0, 0);
     topSpeed = 10;
-    mass = random(1, 20);
+    lifespan = 255;
+    aging = a;
+    inc = 0.1;
+    mass = random(1, 40);
+    
     v1 = random(1, 255);
     v2 = random(1, 255);
     v3 = random(1, 255);
@@ -21,11 +31,17 @@ class Particle {
     acceleration.add(f);
   }
   
-  void update(){
-    //mouse = new PVector(mouseX, mouseY);
+  void update(){   
+    //checks if
+    if (lifespan <= 0){
+      alive = false;  
+    }
     
     velocity.add(acceleration);
     velocity.limit(topSpeed);
+    
+    //Aging the particle
+    lifespan -= aging;
       
        
     // Reversing direction of the particles at screen edges   
@@ -44,10 +60,10 @@ class Particle {
     acceleration.mult(0);
   }
   
-  void show() {
+  void show() {  
     //float c = velocity.magSq();
-    stroke(v1, v2, v3);
-    strokeWeight(mass);
+    stroke(51, 169, 255, lifespan);
+    strokeWeight(mass);    
     
     point(location.x, location.y);
   }
