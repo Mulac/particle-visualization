@@ -1,27 +1,49 @@
-ParticleSystem system;
-Button settings;
+ArrayList<Particle> particles;
+ArrayList<AttractionPoint> attractors;
 
 void setup() {
   size(displayWidth, displayHeight);
+  background(51);
   
-  system = new ParticleSystem();
+  particles = new ArrayList<Particle>();
+  attractors = new ArrayList<AttractionPoint>();
   
-  for (int p = 0; p < 500; p++) {
-    system.addParticle();
+  for (int p = 0; p < 1; p++) {
+    particles.add(new Particle());
   }
 }
 
 void draw(){
-  background(51);
+  background(51, 5);
   
-  system.run();
+  for (int t = 0; t < attractors.size(); t++) {
+      AttractionPoint a = attractors.get(t);
+      
+      a.run(touches[t].x, touches[t].y);
+    }
+    
+    
+    for (Particle p : particles) {
+      PVector f = new PVector(0, 0);
+      
+      for (AttractionPoint a : attractors) {
+        //Adds the forces from each attraction point together
+        f.add(a.attract(p));
+        //PVector force = a.attract(p);
+        //p.applyForce(force);
+      }
+      
+      p.applyForce(f);
+         
+      p.show();
+      p.update(); 
+    }
 }
 
 void touchStarted() {
-  system.addAttractor();
+  attractors.add(new AttractionPoint());
 }
 
 void touchEnded() {
-  system.removeAttractor();
+  attractors.remove(0);
 }
-  
